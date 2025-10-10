@@ -2,209 +2,195 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fluukpe Web App</title>
-
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />
-
-  <!-- iOS / PWA meta -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Fluukpe" />
-
-  <!-- Trusted Types -->
-  <meta http-equiv="Content-Security-Policy" content="require-trusted-types-for 'script'">
-
-  <!-- Icon -->
-  <link rel="icon" href="icons/icon-192.png" />
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
-
+  <title>Fluukpe – AI, Web & Blockchain Innovation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg-dark: radial-gradient(circle at 30% 30%, #0a0f24, #000);
-      --bg-light: radial-gradient(circle at center, #ffffff, #dddddd);
-      --text-dark: #ffffff;
-      --text-light: #111111;
-      --accent: #00e0ff;
-    }
-
-    html, body {
-      height: 100%;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #040018, #0b0038, #16005c);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       overflow: hidden;
-      background: var(--bg-dark);
-      color: var(--text-dark);
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      transition: background 0.8s, color 0.8s;
     }
 
-    #theme-toggle {
-      position: fixed;
-      top: 16px;
-      right: 24px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: var(--accent);
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 13px;
-      cursor: pointer;
-      z-index: 1000;
-      backdrop-filter: blur(6px);
-      transition: background 0.3s;
-    }
-    #theme-toggle:hover {
-      background: rgba(255,255,255,0.2);
+    header {
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      font-weight: 600;
+      letter-spacing: 1px;
     }
 
-    body.light {
-      background: var(--bg-light);
-      color: var(--text-light);
-    }
-
-    #fluukpe-loader {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #0e0e0e, #1b1b1b);
-      z-index: 9999;
-      transition: opacity 1s ease;
-      text-align: center;
-    }
-
-    #fluukpe-logo {
-      width: 140px;
-      height: 140px;
-      opacity: 0;
-      transform: scale(0.8);
-      transition: all 1s ease-in-out;
-    }
-
-    #fluukpe-loader p {
-      margin-top: 15px;
-      font-size: 18px;
-      color: #aaa;
-      animation: pulse 2s infinite;
+    .logo {
+      width: 160px;
+      height: 160px;
+      margin-bottom: 20px;
+      animation: pulse 3s infinite ease-in-out;
     }
 
     @keyframes pulse {
-      0%,100% { opacity: 0.6; }
-      50% { opacity: 1; }
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.9; }
     }
 
-    #slogan {
-      margin-top: 10px;
-      font-size: 16px;
-      color: var(--accent);
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #00ffe1, #9d4edd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 15px;
+    }
+
+    p {
+      max-width: 700px;
+      text-align: center;
+      font-size: 1.1rem;
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .btn {
+      padding: 12px 30px;
+      border-radius: 25px;
       font-weight: 600;
-      opacity: 0;
-      animation: fadeIn 2s ease-in-out forwards;
-      animation-delay: 1s;
-      text-shadow: 0 0 8px var(--accent);
+      text-decoration: none;
+      transition: 0.3s;
+      border: 2px solid transparent;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+    .btn.primary {
+      background: linear-gradient(90deg, #00ffe1, #9d4edd);
+      color: #fff;
     }
 
-    .progress-bar {
-      width: 0%;
-      height: 4px;
-      background: linear-gradient(90deg, #00ffd5, #00b3ff);
-      border-radius: 10px;
-      margin-top: 20px;
-      transition: width 0.5s ease;
+    .btn.primary:hover {
+      background: transparent;
+      border-color: #9d4edd;
     }
 
-    .loading-text {
-      margin-top: 10px;
-      font-size: 14px;
-      color: var(--accent);
-      font-weight: 600;
-      animation: typing 2s steps(20, end) infinite alternate;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 2px solid var(--accent);
+    .btn.secondary {
+      background: transparent;
+      border: 2px solid #00ffe1;
+      color: #00ffe1;
     }
 
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 16ch; }
+    .btn.secondary:hover {
+      background: #00ffe1;
+      color: #0a001f;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
     }
   </style>
-
-  <script>
-    var serviceWorkerVersion = null;
-  </script>
-
-  <script src="flutter.js" defer></script>
 </head>
 <body>
-  <button id="theme-toggle">🌗 Toggle Theme</button>
+  <canvas id="bg"></canvas>
+  <header>Fluukpe Project</header>
 
-  <div id="fluukpe-loader">
-    <img id="fluukpe-logo" src="icons/icon-192.png" alt="Fluukpe Logo">
-    <p>Launching Fluukpe…</p>
-    <div id="slogan">Fluukpe: Future in Motion ⚡</div>
-    <div class="progress-bar" id="progress-bar"></div>
-    <div class="loading-text" id="loading-text">initializing AI modules...</div>
+  <img src="logo.png" alt="Fluukpe Logo" class="logo" />
+
+  <h1>Fluukpe</h1>
+  <p>
+    Where intelligence meets creation — Fluukpe is a next-gen platform blending AI,
+    web technologies, and blockchain to redefine how humans and machines interact.
+    Designed by <b>Seriki Yakub (KUBU LEE)</b>, it embodies innovation, creativity, and the power of automation.
+  </p>
+
+  <div class="btn-container">
+    <a href="https://github.com/Web4application/fluukpe" target="_blank" class="btn primary">Explore on GitHub</a>
+    <a href="#get-started" class="btn secondary">Get Started</a>
   </div>
 
+  <footer>© 2025 Fluukpe by Web4Application | All Rights Reserved</footer>
+
   <script>
-    // Theme toggle
-    const toggle = document.getElementById('theme-toggle');
-    toggle.addEventListener('click', () => {
-      document.body.classList.toggle('light');
-    });
+    // Simple animated background particles (Flutter.js placeholder visual)
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
 
-    // Loader animations & Flutter bootstrap
-    document.addEventListener('DOMContentLoaded', () => {
-      const loader = document.getElementById('fluukpe-loader');
-      const logo = document.getElementById('fluukpe-logo');
-      const progressBar = document.getElementById('progress-bar');
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
 
-      let fade = 0;
-      const interval = setInterval(() => {
-        fade += 0.05;
-        logo.style.opacity = fade;
-        logo.style.transform = `scale(${1 + fade/5})`;
-        if (fade >= 1) clearInterval(interval);
-      }, 100);
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3;
+        this.speedX = (Math.random() - 0.5) * 2;
+        this.speedY = (Math.random() - 0.5) * 2;
+        this.color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+      }
 
-      let progress = 0;
-      const progInterval = setInterval(() => {
-        if (progress < 95) {
-          progress += Math.random() * 10;
-          progressBar.style.width = Math.min(progress, 100) + '%';
-        }
-      }, 300);
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
 
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: { serviceWorkerVersion: serviceWorkerVersion },
-        onEntrypointLoaded: async function(engineInitializer) {
-          const appRunner = await engineInitializer.initializeEngine();
-          progressBar.style.width = '100%';
-          setTimeout(() => {
-            loader.style.opacity = 0;
-            setTimeout(() => { loader.remove(); }, 700);
-          }, 600);
-          appRunner.runApp();
-        }
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+
+    function init() {
+      for (let i = 0; i < 80; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
       });
-    });
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
   </script>
 </body>
 </html>
