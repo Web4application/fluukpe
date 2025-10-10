@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Fluukpe — your next-gen AI experience." />
+  <title>Fluukpe – Web App</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="assets/icon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-dark: radial-gradient(circle, #141414, #000);
+      --bg-light: radial-gradient(circle, #ffffff, #dddddd);
+      --text-dark: #fff;
+      --text-light: #111;
+      --accent: #00e0ff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      transition: background 1s, color 1s;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 10000;
+      backdrop-filter: blur(6px);
+      transition: background 0.3s;
+    }
+    #theme-toggle:hover { background: rgba(255,255,255,0.2); }
+
+    #fluukpe-loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0e0e0e, #1b1b1b);
+      transition: opacity 1s ease;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    #fluukpe-logo {
+      width: 140px;
+      height: 140px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 1s ease-in-out;
+    }
+
+    #fluukpe-loader p {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #aaa;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:0.6;}50%{opacity:1;} }
+
+    #slogan {
+      margin-top: 12px;
+      font-size: 16px;
+      color: var(--accent);
+      font-weight: 600;
+      opacity: 0;
+      animation: fadeInSlogan 2.5s forwards ease-in-out;
+      animation-delay: 1.5s;
+      text-shadow: 0 0 8px #00e0ff;
+    }
+
+    @keyframes fadeInSlogan {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 4px;
+      background: linear-gradient(90deg, #00ffd5, #00b3ff);
+      border-radius: 10px;
+      margin-top: 25px;
+      transition: width 0.5s ease;
+    }
+
+    .loading-text {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--accent);
+      font-weight: 600;
+      animation: typing 2s steps(20,end) infinite alternate;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid var(--accent);
+    }
+
+    @keyframes typing { from { width: 0; } to { width: 16ch; } }
+
+    canvas#particle-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background: transparent;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="theme-toggle">🌗 Toggle Theme</button>
+  <canvas id="particle-bg"></canvas>
+
+  <div id="fluukpe-loader">
+    <img id="fluukpe-logo" src="assets/icon.png" alt="Fluukpe Logo" />
+    <p>Launching Fluukpe…</p>
+    <div id="slogan">Fluukpe: Future in Motion ⚡</div>
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="loading-text" id="loading-text">initializing AI modules...</div>
+  </div>
+
+  <script>
+    // Theme toggle
+    const toggle = document.getElementById('theme-toggle');
+    toggle.addEventListener('click', () => {
+      const dark = document.body.style.background.includes('141414');
+      document.body.style.background = dark ? 'var(--bg-light)' : 'var(--bg-dark)';
+      document.body.style.color = dark ? 'var(--text-light)' : 'var(--text-dark)';
+    });
+
+    // Particle animation
+    const canvas = document.getElementById('particle-bg');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+    const particles = [];
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    for (let i = 0; i < 70; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 1,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(0, 224, 255, 0.5)';
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < 0 || p.x > w) p.dx *= -1;
+        if (p.y < 0 || p.y > h) p.dy *= -1;
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // Loader animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const loader = document.getElementById('fluukpe-loader');
+      const logo = document.getElementById('fluukpe-logo');
+      const progressBar = document.getElementById('progress-bar');
+
+      let fade = 0;
+      const interval = setInterval(() => {
+        fade += 0.05;
+        logo.style.opacity = fade;
+        logo.style.transform = `scale(${1 + fade / 5})`;
+        if (fade >= 1) clearInterval(interval);
+      }, 100);
+
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        if (progress < 95) {
+          progress += Math.random() * 10;
+          progressBar.style.width = Math.min(progress, 100) + '%';
+        }
+      }, 300);
+
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: { serviceWorkerVersion: 'v1' },
+        onEntrypointLoaded: async (engineInitializer) => {
+          const appRunner = await engineInitializer.initializeEngine();
+          await appRunner.runApp();
+          progressBar.style.width = '100%';
+          setTimeout(() => {
+            loader.style.opacity = 0;
+            setTimeout(() => loader.remove(), 800);
+          }, 600);
+        },
+      });
+    });
+  </script>
+
+  <script src="flutter.js" defer></script>
+  <script src="main.dart.js" type="application/javascript"></script>
+
+  <script type="application/json" id="manifest-json">
+  {
+    "name": "Fluukpe",
+    "short_name": "Fluukpe",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#111111",
+    "description": "Fluukpe — your next-gen AI experience.",
+    "icons": [
+      { "src": "assets/icon.png", "sizes": "192x192", "type": "image/png" },
+      { "src": "assets/icon.png", "sizes": "512x512", "type": "image/png" }
+    ]
+  }
+  </script>
+</body>
+</html>
